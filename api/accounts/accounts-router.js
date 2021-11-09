@@ -33,8 +33,21 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res) => {
   // DO YOUR MAGIC
+  try {
+    const { name , budget} = req.body
+
+    if(!name || !budget) {
+      res.status(400).json({message: 'name and budget are undefined'})
+    } else {
+      const newAccount = await Accounts.create({name , budget})
+      res.status(201).json(newAccount)
+    }
+
+  } catch (err) {
+    res.status(500).json({message: 'Error with the server check code!'})
+  }
 })
 
 router.put('/:id', (req, res, next) => {
