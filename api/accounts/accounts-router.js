@@ -47,29 +47,7 @@ router.post('/', checkAccountPayload, checkAccountNameUnique, async (req, res, n
 })
 
 
-// try {
-//   const {id} = req.params
-//   const {name, budget} = req.body
-//
-//   if (!name || !budget) {
-//     res.status(400).json({message: 'needs a name and budget'})
-//   } else {
-//     const updatedAccount = await Accounts.updateById(id, {name, budget})
-//
-//     if (!updatedAccount) {
-//       res.status(404).json({message: 'Account no exist'})
-//     } else {
-//       res.status(200).json(updatedAccount)
-//     }
-//
-//   }
-//
-// } catch (err) {
-//   res.status(500).json({message: 'Error with the server check code!'})
-// }
-
-
-router.put('/:id', checkAccountPayload, checkAccountId, checkAccountNameUnique,  async (req, res , next) => {
+router.put('/:id', checkAccountPayload, checkAccountId, checkAccountNameUnique, async (req, res, next) => {
   // DO YOUR MAGIC
   try {
     const updatedAccount = await Accounts.updateById(req.params.id, req.body)
@@ -77,28 +55,27 @@ router.put('/:id', checkAccountPayload, checkAccountId, checkAccountNameUnique, 
   } catch (err) {
     next(err)
   }
-
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAccountId, async (req, res, next) => {
   // DO YOUR MAGIC
   try {
-    const {id} = req.params
-    const deletedAccount = await Accounts.deleteById(id)
-
-    if (!deletedAccount) {
-      res.status(404).json({message: 'account not found'})
-    } else {
-      res.status(200).json(deletedAccount)
-    }
+    const deletedAccount = await Accounts.deleteById(req.params.id)
+    res.status(200).json(deletedAccount)
   } catch (err) {
-    res.status(500).json({message: 'Error with the server check code!'})
+    next(err)
   }
 
 })
 
-router.use((err, req, res, next) => { // eslint-disable-line
-                                      // DO YOUR MAGIC
+router.use((err, req, res, next) => {
+  // DO YOUR MAGIC
+  res.status(err.status || 500).json({
+    custom: 'Check the code!',
+    message: err.message,
+    stack: err.stack
+  })
+  next()
 })
 
 module.exports = router;
