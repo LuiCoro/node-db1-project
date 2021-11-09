@@ -1,7 +1,19 @@
 const router = require('express').Router()
+const Accounts = require('./accounts-model')
 
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res) => {
   // DO YOUR MAGIC
+  try{
+    const data = await Accounts.getAll()
+    if(!data) {
+      res.status(400).json({message: 'Can not get all accounts!'})
+    } else {
+      res.status(200).json(data)
+    }
+
+  } catch (err) {
+    res.status(500).json({message: 'Error with the server check code!'})
+  }
 })
 
 router.get('/:id', (req, res, next) => {
