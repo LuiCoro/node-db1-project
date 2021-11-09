@@ -31,7 +31,7 @@ exports.checkAccountNameUnique = async (req, res, next) => {
     const data = await dbConfig('accounts').where('name', req.body.name.trim()).first()
 
     if (data) {
-      res.status(400).json({message: 'that name is already taken'})
+      res.status(400).json({message: 'this name is taken'})
     } else {
       next()
     }
@@ -41,6 +41,12 @@ exports.checkAccountNameUnique = async (req, res, next) => {
   }
 }
 
-exports.checkAccountId = (req, res, next) => {
+exports.checkAccountId = async(req, res, next) => {
   // DO YOUR MAGIC
+  const accountID = await Accounts.getById(req.params.id)
+  if(!accountID){
+    res.status(404).json({message: 'account not found'})
+  } else {
+    next()
+  }
 }
