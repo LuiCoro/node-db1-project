@@ -16,8 +16,21 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res) => {
   // DO YOUR MAGIC
+  try {
+    const {id} = req.params
+    const accountByID = await Accounts.getById(id)
+
+    if(!accountByID) {
+      res.status(404).json({message: 'account not found'})
+    } else {
+      res.status(200).json(accountByID)
+    }
+
+  } catch (err) {
+    res.status(500).json({message: 'Error with the server check code!'})
+  }
 })
 
 router.post('/', (req, res, next) => {
