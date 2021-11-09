@@ -76,11 +76,23 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   // DO YOUR MAGIC
+  try {
+    const {id} = req.params
+    const deletedAccount = await Accounts.deleteById(id)
+
+    if(!deletedAccount) {
+      res.status(404).json({message: 'account not found'})
+    } else {
+      res.status(200).json(deletedAccount)
+    }
+  } catch (err) {
+    res.status(500).json({message : 'Error with the server check code!'})
+  }
 
 })
 
 router.use((err, req, res, next) => { // eslint-disable-line
-                                      // DO YOUR MAGIC
+  // DO YOUR MAGIC
 })
 
 module.exports = router;
